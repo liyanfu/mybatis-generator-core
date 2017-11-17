@@ -37,7 +37,11 @@ http://mbg.cndocs.tk/
         <!--插件 ：用来为生成的Java模型类添加序列化接口-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         
-         <plugin type="org.mybatis.generator.plugins.InsertBatchPlugin"/>
+         <plugin type="org.mybatis.generator.plugins.InsertBatchPlugin">
+         	<!-- 是否插入之后返回主键key -->
+         	<property name="useGeneratedKeys" value="false"/>
+         </plugin>
+         <plugin type="org.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
         
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>

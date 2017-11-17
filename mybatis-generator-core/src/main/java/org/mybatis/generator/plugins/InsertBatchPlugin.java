@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2017.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.mybatis.generator.plugins;
 
 import java.util.List;
@@ -48,19 +32,24 @@ import org.mybatis.generator.internal.util.XmlElementGeneratorTools;
 public class InsertBatchPlugin extends PluginAdapter {
 	protected CommentGenerator commentGenerator; // 注释工具
 	protected List<String> warnings; // 提示
-	public static final String INSERT_BATCH = "insertBatch"; // 方法名 insertBatch
-	public static final String INSERT_BATCH_SELECTIVE = "insertBatchSelective"; // 方法名
-																				// insertBatchSelective
+	// 方法名 insertBatch
+	public static final String INSERT_BATCH = "insertBatch";
+	// 方法名 insertBatchSelective
+	public static final String INSERT_BATCH_SELECTIVE = "insertBatchSelective";
+	// 读取配置文件中设置的是否插入返回主键key
+	public static Boolean useGeneratedKeys = Boolean.FALSE;
 
 	@Override
 	public void setContext(Context context) {
 		super.setContext(context);
-		// 用户自定义
+		// 自定义
 		commentGenerator = context.getCommentGenerator();
 	}
 
 	@Override
 	public boolean validate(List<String> warnings) {
+		String value = properties.getProperty("useGeneratedKeys"); //$NON-NLS-1$
+		useGeneratedKeys = Boolean.valueOf(value);
 		return true;
 	}
 
@@ -82,12 +71,12 @@ public class InsertBatchPlugin extends PluginAdapter {
 		interfaze.addMethod(insertBatch);
 
 		// 2. insertBatchSelective
-		FullyQualifiedJavaType selectiveType = FullyQualifiedJavaType.getNewListInstance();
-		selectiveType.addTypeArgument(introspectedTable.getRules().calculateAllFieldsClass());
+		FullyQualifiedJavaType selectiveType = listType = FullyQualifiedJavaType.getNewListInstance();
+		selectiveType.addTypeArgument(FullyQualifiedJavaType.getStringInstance());
 		Method mBatchInsertSelective = JavaElementGeneratorTools.generateMethod(INSERT_BATCH_SELECTIVE,
 				JavaVisibility.DEFAULT, FullyQualifiedJavaType.getIntInstance(),
-				new Parameter(listType, "list", "@Param(\"list\")"),
-				new Parameter(selectiveType, "selective", "@Param(\"selective\")", true));
+				new Parameter(selectiveType, "showField", "@Param(\"showField\")"),
+				new Parameter(listType, "list", "@Param(\"list\")"));
 		commentGenerator.addGeneralMethodComment(mBatchInsertSelective, introspectedTable);
 		// interface 增加方法
 		interfaze.addMethod(mBatchInsertSelective);
@@ -103,12 +92,14 @@ public class InsertBatchPlugin extends PluginAdapter {
 		XmlElement batchInsertEle = new XmlElement("insert");
 		batchInsertEle.addAttribute(new Attribute("id", INSERT_BATCH));
 		// 参数类型
-		batchInsertEle.addAttribute(new Attribute("parameterType", "map"));
+		batchInsertEle.addAttribute(new Attribute("parameterType", "java.util.List"));
 		// 添加注释 必须添加注释
 		commentGenerator.addComment(batchInsertEle);
 
 		// 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中
-		XmlElementGeneratorTools.useGeneratedKeys(batchInsertEle, introspectedTable);
+		if (useGeneratedKeys) {
+			XmlElementGeneratorTools.useGeneratedKeys(batchInsertEle, introspectedTable);
+		}
 
 		batchInsertEle
 				.addElement(new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
@@ -139,18 +130,20 @@ public class InsertBatchPlugin extends PluginAdapter {
 		XmlElement element = new XmlElement("insert");
 		element.addAttribute(new Attribute("id", INSERT_BATCH_SELECTIVE));
 		// 参数类型
-		element.addAttribute(new Attribute("parameterType", "map"));
+		element.addAttribute(new Attribute("parameterType", "java.util.List"));
 		// 添加注释 必须添加注释
 		commentGenerator.addComment(element);
 
 		// 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中
-		XmlElementGeneratorTools.useGeneratedKeys(element, introspectedTable);
+		if (useGeneratedKeys) {
+			XmlElementGeneratorTools.useGeneratedKeys(element, introspectedTable);
+		}
 
 		element.addElement(
 				new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime() + " ("));
 
 		XmlElement foreachInsertColumns = new XmlElement("foreach");
-		foreachInsertColumns.addAttribute(new Attribute("collection", "selective"));
+		foreachInsertColumns.addAttribute(new Attribute("collection", "showField"));
 		foreachInsertColumns.addAttribute(new Attribute("item", "column"));
 		foreachInsertColumns.addAttribute(new Attribute("separator", ","));
 		foreachInsertColumns.addElement(new TextElement("${column.value}"));
@@ -172,7 +165,7 @@ public class InsertBatchPlugin extends PluginAdapter {
 
 		// foreach 所有插入的列，比较是否存在
 		XmlElement foreachInsertColumnsCheck = new XmlElement("foreach");
-		foreachInsertColumnsCheck.addAttribute(new Attribute("collection", "selective"));
+		foreachInsertColumnsCheck.addAttribute(new Attribute("collection", "showField"));
 		foreachInsertColumnsCheck.addAttribute(new Attribute("item", "column"));
 		foreachInsertColumnsCheck.addAttribute(new Attribute("separator", ","));
 
