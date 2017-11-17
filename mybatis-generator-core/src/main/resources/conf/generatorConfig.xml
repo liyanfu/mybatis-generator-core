@@ -37,6 +37,8 @@ http://mbg.cndocs.tk/
         <!--插件 ：用来为生成的Java模型类添加序列化接口-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         
+         <plugin type="org.mybatis.generator.plugins.InsertBatchPlugin"/>
+        
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
        -->
