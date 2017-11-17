@@ -124,7 +124,7 @@ public class XmlElementGeneratorTools {
 			// if the column is null, then it's a configuration error. The
 			// warning has already been reported
 			if (introspectedColumn != null) {
-				// 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中。所以只支持MYSQL和SQLServer
+				// 使用JDBC的getGenereatedKeys方法获取主键并赋值到keyProperty设置的领域模型属性中
 				element.addAttribute(new Attribute("useGeneratedKeys", "true"));
 				element.addAttribute(new Attribute("keyProperty",
 						(prefix == null ? "" : prefix) + introspectedColumn.getJavaProperty()));

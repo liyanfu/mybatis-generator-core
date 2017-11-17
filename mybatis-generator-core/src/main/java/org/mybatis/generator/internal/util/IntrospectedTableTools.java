@@ -43,15 +43,15 @@ public class IntrospectedTableTools {
 	public static void setDomainObjectName(IntrospectedTable introspectedTable, Context context,
 			String domainObjectName)
 			throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-		// 配置信息（没啥用）
+		// 配置信息
 		introspectedTable.getTableConfiguration().setDomainObjectName(domainObjectName);
 
-		// FullyQualifiedTable修正
+		// FullyQualifiedTable
 		Field domainObjectNameField = FullyQualifiedTable.class.getDeclaredField("domainObjectName");
 		domainObjectNameField.setAccessible(true);
 		domainObjectNameField.set(introspectedTable.getFullyQualifiedTable(), domainObjectName);
 
-		// 重新修正introspectedTable属性信息
+		// introspectedTable属性信息
 		Method calculateJavaClientAttributes = IntrospectedTable.class
 				.getDeclaredMethod("calculateJavaClientAttributes");
 		calculateJavaClientAttributes.setAccessible(true);
