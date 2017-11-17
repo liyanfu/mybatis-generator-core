@@ -42,6 +42,8 @@ http://mbg.cndocs.tk/
          	<property name="useGeneratedKeys" value="false"/>
          </plugin>
          <plugin type="org.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
+         <plugin type="org.mybatis.generator.plugins.SelectByExampleShowFieldPlugin"/>
+        
         
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>

@@ -1,7 +1,5 @@
 package org.mybatis.generator.plugins;
 
-import static org.mybatis.generator.internal.util.StringUtility.stringHasValue;
-
 import java.util.List;
 
 import org.mybatis.generator.api.CommentGenerator;
@@ -36,8 +34,6 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 	public static final String SELECT_ONE_BY_EXAMPLE = "selectOneByExample";
 	// 查询一条数据大文本方法
 	public static final String SELECT_ONE_BY_EXAMPLE_WITH_BLOBS = "selectOneByExampleWithBLOBs";
-	// 根据需求查询需要返回的列
-	public static final String SELECT_ONE_BY_EXAMPLE_SHOW_FIELD = "selectOneByExampleShowField";
 
 	@Override
 	public void setContext(Context context) {
@@ -85,21 +81,6 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 			interfaze.addMethod(selectOneByExampleWithBLOBs);
 		}
 
-		// 3. 新增方法 selectOneByExampleShowField
-		// 定义返回类型
-		FullyQualifiedJavaType resultMap = introspectedTable.getRules().calculateAllFieldsClass();
-		// 定义第一个参数为List<String>
-		FullyQualifiedJavaType showField = FullyQualifiedJavaType.getNewListInstance();
-		showField.addTypeArgument(FullyQualifiedJavaType.getStringInstance());
-		// 定义第二个参数为example
-		FullyQualifiedJavaType example = new FullyQualifiedJavaType(introspectedTable.getExampleType());
-		Method selectOneByExampleShowField = JavaElementGeneratorTools.generateMethod(SELECT_ONE_BY_EXAMPLE_SHOW_FIELD,
-				JavaVisibility.DEFAULT, resultMap, new Parameter(showField, "showField", "@Param(\"showField\")"),
-				new Parameter(example, "example", "@Param(\"example\")"));
-
-		commentGenerator.addGeneralMethodComment(selectOneByExampleShowField, introspectedTable);
-		// interface 增加方法
-		interfaze.addMethod(selectOneByExampleShowField);
 		return true;
 	}
 
@@ -204,36 +185,6 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 		columnsEle.addAttribute(new Attribute("item", "column"));
 		columnsEle.addAttribute(new Attribute("separator", ","));
 		columnsEle.addElement(new TextElement("${column.value}"));
-
-		// 1. selectByExampleSelective 方法
-		XmlElement selectOneByExampleShowField = new XmlElement("select");
-		commentGenerator.addComment(selectOneByExampleShowField);
-
-		selectOneByExampleShowField.addAttribute(new Attribute("id", SELECT_ONE_BY_EXAMPLE_SHOW_FIELD));
-		selectOneByExampleShowField.addAttribute(new Attribute("resultType",
-				introspectedTable.getRules().calculateAllFieldsClass().getFullyQualifiedName()));
-		selectOneByExampleShowField.addAttribute(new Attribute("parameterType", "map"));
-
-		selectOneByExampleShowField.addElement(new TextElement("select"));
-		if (stringHasValue(introspectedTable.getSelectByExampleQueryId())) {
-			selectOneByExampleShowField
-					.addElement(new TextElement("'" + introspectedTable.getSelectByExampleQueryId() + "' as QUERYID,"));
-		}
-		selectOneByExampleShowField.addElement(columnsEle);
-		selectOneByExampleShowField
-				.addElement(new TextElement("from " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
-
-		selectOneByExampleShowField
-				.addElement(XmlElementGeneratorTools.getUpdateByExampleIncludeElement(introspectedTable));
-
-		XmlElement ifElementShowField = new XmlElement("if");
-		ifElementShowField.addAttribute(new Attribute("test", "example.orderByClause != null"));
-		ifElementShowField.addElement(new TextElement("order by ${example.orderByClause}"));
-		selectOneByExampleShowField.addElement(ifElementShowField);
-
-		// 只查询一条
-		selectOneByExampleShowField.addElement(new TextElement("limit 1"));
-		FormatTools.addElementWithBestPosition(document.getRootElement(), selectOneByExampleShowField);
 
 		return true;
 	}

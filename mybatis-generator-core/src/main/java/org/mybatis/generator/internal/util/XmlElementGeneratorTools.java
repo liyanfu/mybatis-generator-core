@@ -87,7 +87,7 @@ public class XmlElementGeneratorTools {
 
 	public static Element getUpdateByExampleIncludeElement(IntrospectedTable introspectedTable) {
 		XmlElement ifElement = new XmlElement("if");
-		ifElement.addAttribute(new Attribute("test", "_parameter != null"));
+		ifElement.addAttribute(new Attribute("test", "example != null"));
 
 		XmlElement includeElement = new XmlElement("include");
 		includeElement
