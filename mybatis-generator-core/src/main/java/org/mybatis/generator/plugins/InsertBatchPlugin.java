@@ -63,7 +63,7 @@ public class InsertBatchPlugin extends PluginAdapter {
 		FullyQualifiedJavaType listType = FullyQualifiedJavaType.getNewListInstance();
 		listType.addTypeArgument(introspectedTable.getRules().calculateAllFieldsClass());
 		Method insertBatch = JavaElementGeneratorTools.generateMethod(INSERT_BATCH, JavaVisibility.DEFAULT,
-				FullyQualifiedJavaType.getIntInstance(), new Parameter(listType, "list", "@Param(\"list\")")
+				FullyQualifiedJavaType.getIntInstance(), new Parameter(listType, "list")
 
 		);
 		commentGenerator.addGeneralMethodComment(insertBatch, introspectedTable);
@@ -144,9 +144,9 @@ public class InsertBatchPlugin extends PluginAdapter {
 
 		XmlElement foreachInsertColumns = new XmlElement("foreach");
 		foreachInsertColumns.addAttribute(new Attribute("collection", "showField"));
-		foreachInsertColumns.addAttribute(new Attribute("item", "column"));
+		foreachInsertColumns.addAttribute(new Attribute("item", "one"));
 		foreachInsertColumns.addAttribute(new Attribute("separator", ","));
-		foreachInsertColumns.addElement(new TextElement("${column.value}"));
+		foreachInsertColumns.addElement(new TextElement("${one}"));
 
 		element.addElement(foreachInsertColumns);
 
@@ -177,8 +177,7 @@ public class InsertBatchPlugin extends PluginAdapter {
 		for (int i = 0; i < columns1.size(); i++) {
 			IntrospectedColumn introspectedColumn = columns.get(i);
 			XmlElement check = new XmlElement("if");
-			check.addAttribute(
-					new Attribute("test", "'" + introspectedColumn.getActualColumnName() + "' == column.value"));
+			check.addAttribute(new Attribute("test", "'" + introspectedColumn.getActualColumnName() + "' == column"));
 			check.addElement(
 					new TextElement(MyBatis3FormattingUtilities.getParameterClause(introspectedColumn, "item.")));
 
