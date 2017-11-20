@@ -41,9 +41,12 @@ http://mbg.cndocs.tk/
          	<!-- 是否插入之后返回主键key -->
          	<property name="useGeneratedKeys" value="false"/>
          </plugin>
+         
+         <plugin type="org.mybatis.generator.plugins.AddFieldPlugin"/>
          <plugin type="org.mybatis.generator.plugins.SelectOneByExamplePlugin"/>
          <plugin type="org.mybatis.generator.plugins.SelectByExampleShowFieldPlugin"/>
          <plugin type="org.mybatis.generator.plugins.UpdateIncrementsPlugin"/>
+         <plugin type="org.mybatis.generator.plugins.AddCriterionIgnoreNull" />
         
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
