@@ -47,6 +47,10 @@ http://mbg.cndocs.tk/
          <plugin type="org.mybatis.generator.plugins.SelectByExampleShowFieldPlugin"/>
          <plugin type="org.mybatis.generator.plugins.UpdateIncrementsPlugin"/>
          <plugin type="org.mybatis.generator.plugins.AddCriterionIgnoreNullPlugin" />
+         <plugin type="org.mybatis.generator.plugins.UpsertPlugin">
+          	<!-- 开启多sql执行 -->
+          	<property name="allowMultiQueries" value="true"/>
+         </plugin>
         
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
@@ -165,11 +169,11 @@ http://mbg.cndocs.tk/
         <!-- 指定生成的数据库表 -->
         <!-- domainObjectName：指定生成的实体类的文件名 -->
 		
-		<table tableName="m_user" domainObjectName="User" >
+		<table tableName="a_manual_transfer" domainObjectName="ManualTransfer" >
 			<!-- 指定生成实体类时是否使用实际的列名作为实体类的属性名  true:是  ,默认:false(Camel Case风格作)-->
 			<property name="useActualColumnNames" value="true"/>
 			<!-- insert方法返回主键Value -->
-			<generatedKey column="userId" sqlStatement="MySql"  identity="true" type="post"/>
+			<generatedKey column="manualTransferId" sqlStatement="MySql"  identity="true" type="post"/>
 		</table>
     </context>
 

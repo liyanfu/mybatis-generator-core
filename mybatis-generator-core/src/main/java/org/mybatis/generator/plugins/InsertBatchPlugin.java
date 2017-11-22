@@ -36,6 +36,8 @@ public class InsertBatchPlugin extends PluginAdapter {
 	public static final String INSERT_BATCH = "insertBatch";
 	// 方法名 insertBatchSelective
 	public static final String INSERT_BATCH_SELECTIVE = "insertBatchSelective";
+
+	public static final String USE_GENERATED_KEYS = "useGeneratedKeys"; // allowMultiQueries
 	// 读取配置文件中设置的是否插入返回主键key
 	public static Boolean useGeneratedKeys = Boolean.FALSE;
 
@@ -48,7 +50,7 @@ public class InsertBatchPlugin extends PluginAdapter {
 
 	@Override
 	public boolean validate(List<String> warnings) {
-		String value = properties.getProperty("useGeneratedKeys"); //$NON-NLS-1$
+		String value = properties.getProperty(USE_GENERATED_KEYS); // $NON-NLS-1$
 		useGeneratedKeys = Boolean.valueOf(value);
 		return true;
 	}

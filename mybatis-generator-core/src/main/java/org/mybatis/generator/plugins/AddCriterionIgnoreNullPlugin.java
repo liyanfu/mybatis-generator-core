@@ -112,12 +112,13 @@ public class AddCriterionIgnoreNullPlugin extends PluginAdapter {
 				JavaVisibility.PUBLIC, FullyQualifiedJavaType.getCriteriaInstance(),
 				new Parameter(method.getParameters().get(0).getType(), "value"));
 
+		String addCriterionIgnoreNull = method.getBodyLines().get(0);
+		String sb = "addCriterionIgnoreNull" + addCriterionIgnoreNull.substring(addCriterionIgnoreNull.indexOf("("),
+				addCriterionIgnoreNull.length());
+
 		// 生成方法实现体
-		addColumnIgnoreNull = JavaElementGeneratorTools
-				.generateMethodBody(
-						addColumnIgnoreNull, method.getBodyLines().get(0)
-								.replace("addCriterion", "addCriterionIgnoreNull").replace("values", "value"),
-						"return (Criteria) this;");
+		addColumnIgnoreNull = JavaElementGeneratorTools.generateMethodBody(addColumnIgnoreNull,
+				sb.replace("values", "value"), "return (Criteria) this;");
 		// 添加方法
 		return addColumnIgnoreNull;
 
