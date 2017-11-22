@@ -16,7 +16,6 @@
 
 package org.mybatis.generator.plugins;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.generator.api.CommentGenerator;
@@ -62,7 +61,6 @@ public class UpsertPlugin extends PluginAdapter {
 	public static final String PRO_ALLOW_MULTI_QUERIES = "allowMultiQueries"; // allowMultiQueries
 
 	private static Boolean allowMultiQueries = Boolean.FALSE; // 是否允许多sql提交
-	private static List<IntrospectedColumn> columns = new ArrayList<>(); // 表启用增量操作的字段
 
 	@Override
 	public void setContext(Context context) {

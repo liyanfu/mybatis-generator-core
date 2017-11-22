@@ -25,7 +25,6 @@ import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
@@ -156,81 +155,6 @@ public class AddCriterionIgnoreNullPlugin extends PluginAdapter {
 		innerClass.addMethod(andColumnLikeInsensitive);
 
 	}
-
-	/**
-	 * 添加工厂方法
-	 * 
-	 * @param topLevelClass
-	 * @param innerClass
-	 * @param introspectedTable
-	 */
-	private void addFactoryMethodToCriteria(TopLevelClass topLevelClass, InnerClass innerClass,
-			IntrospectedTable introspectedTable) {
-		// example field
-		Field exampleField = JavaElementGeneratorTools.generateField("example", JavaVisibility.PRIVATE,
-				topLevelClass.getType(), null);
-		commentGenerator.addFieldComment(exampleField, introspectedTable);
-		innerClass.addField(exampleField);
-
-		// overwrite constructor
-		List<Method> methods = innerClass.getMethods();
-		for (Method method : methods) {
-			if (method.isConstructor()) {
-				method.addParameter(new Parameter(topLevelClass.getType(), "example"));
-				method.addBodyLine("this.example = example;");
-				commentGenerator.addGeneralMethodComment(method, introspectedTable);
-			}
-		}
-
-		// 添加example工厂方法
-		Method exampleMethod = JavaElementGeneratorTools.generateMethod("example", JavaVisibility.PUBLIC,
-				topLevelClass.getType());
-		commentGenerator.addGeneralMethodComment(exampleMethod, introspectedTable);
-		exampleMethod = JavaElementGeneratorTools.generateMethodBody(exampleMethod, "return this.example;");
-		innerClass.addMethod(exampleMethod);
-	}
-
-	/**
-	 * 增强Criteria的链式调用，添加andIf(boolean addIf, CriteriaAdd
-	 * add)方法，实现链式调用中按条件增加查询语句
-	 * 
-	 * @param topLevelClass
-	 * @param innerClass
-	 * @param introspectedTable
-	 */
-	// private void addAndIfMethodToCriteria(TopLevelClass topLevelClass,
-	// InnerClass innerClass,
-	// IntrospectedTable introspectedTable) {
-	// // 添加接口CriteriaAdd
-	// InnerInterface criteriaAddInterface = new InnerInterface("ICriteriaAdd");
-	// criteriaAddInterface.setVisibility(JavaVisibility.PUBLIC);
-	//
-	// // ICriteriaAdd增加接口add
-	// Method addMethod = JavaElementGeneratorTools.generateMethod("add",
-	// JavaVisibility.DEFAULT, innerClass.getType(),
-	// new Parameter(innerClass.getType(), "add"));
-	// commentGenerator.addGeneralMethodComment(addMethod, introspectedTable);
-	// criteriaAddInterface.addMethod(addMethod);
-	//
-	// InnerClass innerClassWrapper = new
-	// InnerInterfaceWrapperToInnerClass(criteriaAddInterface);
-	// // 添加注释
-	// commentGenerator.addClassComment(innerClassWrapper, introspectedTable);
-	// innerClass.addInnerClass(innerClassWrapper);
-	//
-	// // 添加andIf方法
-	// Method andIfMethod = JavaElementGeneratorTools.generateMethod("andIf",
-	// JavaVisibility.PUBLIC,
-	// innerClass.getType(), new
-	// Parameter(FullyQualifiedJavaType.getBooleanPrimitiveInstance(), "ifAdd"),
-	// new Parameter(criteriaAddInterface.getType(), "add"));
-	// commentGenerator.addGeneralMethodComment(andIfMethod, introspectedTable);
-	// andIfMethod = JavaElementGeneratorTools.generateMethodBody(andIfMethod,
-	// "if (ifAdd) {", "add.add(this);", "}",
-	// "return this;");
-	// innerClass.addMethod(andIfMethod);
-	//
-	// }
 
 	/**
 	 * 
