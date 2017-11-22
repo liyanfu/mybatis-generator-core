@@ -136,7 +136,7 @@ public class AddCriterionIgnoreNullPlugin extends PluginAdapter {
 		String columnName = columns.getJavaProperty();
 		// 属性名首字母转大写
 		StringBuffer sb = new StringBuffer("");
-		Matcher m = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(columnName);
+		Matcher m = Pattern.compile("([a-z])([a-z]*\\d*)", Pattern.CASE_INSENSITIVE).matcher(columnName);
 		while (m.find()) {
 			m.appendReplacement(sb, m.group(1).toUpperCase() + m.group(2));
 		}

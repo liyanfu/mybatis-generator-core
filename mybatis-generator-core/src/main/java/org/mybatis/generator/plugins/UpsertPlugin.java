@@ -224,6 +224,7 @@ public class UpsertPlugin extends PluginAdapter {
 			eleUpsertByExampleSelective.addElement(
 					new TextElement("insert into " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
 			eleUpsertByExampleSelective.addElement(XmlElementGeneratorTools.generateKeysSelective(columns, "record."));
+
 			this.generateExistsClause(introspectedTable, eleUpsertByExampleSelective, true, columns);
 
 			// multiQueries
@@ -360,8 +361,9 @@ public class UpsertPlugin extends PluginAdapter {
 		}
 		eleUpsert.addElement(new TextElement("on duplicate key update "));
 		// set 操作增加增量插件支持
-		sqlSetGenerator(eleUpsert, introspectedTable, false);
-
+		// sqlSetGenerator(eleUpsert, introspectedTable, false);
+		// set 操作增加增量插件支持
+		sqlSetGeneratorUpsert(eleUpsert, introspectedTable, false);
 		document.getRootElement().addElement(eleUpsert);
 
 		if (allowMultiQueries) {
@@ -431,6 +433,7 @@ public class UpsertPlugin extends PluginAdapter {
 	public static void sqlSetGenerator(XmlElement method, IntrospectedTable introspectedTable, boolean recordFalg) {
 
 		List<IntrospectedColumn> columnList = introspectedTable.getAllColumns();
+
 		int index = columnList.size();
 		for (IntrospectedColumn introspectedColumn : columnList) {
 			// 属性类型
@@ -447,7 +450,7 @@ public class UpsertPlugin extends PluginAdapter {
 
 			XmlElement ifElement = new XmlElement("if");
 
-			if (("java.lang.Integer".equals(columnType) || "java.math.BigDecimal".equals(columnType)) && !isIdentity) {
+			if ("java.math.BigDecimal".equals(columnType) && !isIdentity) {
 
 				if (recordFalg) {
 					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
@@ -463,15 +466,65 @@ public class UpsertPlugin extends PluginAdapter {
 				}
 			} else {
 
-				ifElement.addAttribute(new Attribute("test", columnName + " != null"));
+				if (recordFalg) {
+					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
+					sb.append(columnName + " =  #{record." + columnName + ",jdbcType=" + jdbcType + "}");
+				} else {
+					ifElement.addAttribute(new Attribute("test", columnName + " != null"));
+					sb.append(columnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
+				}
+
+			}
+
+			if (index != 1) {
+				sb.append(",");
+			}
+			ifElement.addElement(new TextElement(sb.toString()));
+			method.addElement(ifElement);
+			index--;
+		}
+
+	}
+
+	public static void sqlSetGeneratorUpsert(XmlElement method, IntrospectedTable introspectedTable,
+			boolean recordFalg) {
+
+		List<IntrospectedColumn> columnList = introspectedTable.getAllColumns();
+		int index = columnList.size();
+		for (IntrospectedColumn introspectedColumn : columnList) {
+			// 属性类型
+			String columnType = introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedName();
+			// 是否主键
+			boolean isIdentity = introspectedColumn.isIdentity();
+			// 属性名称
+			String columnName = introspectedColumn.getJavaProperty();
+			// jdbc类型
+			String jdbcType = introspectedColumn.getJdbcTypeName();
+			// BIGINT
+			StringBuffer sb = new StringBuffer();
+
+			if ("java.math.BigDecimal".equals(columnType) && !isIdentity) {
+
+				if (recordFalg) {
+
+					sb.append(columnName + " = (case when " + columnName + " is null then #{record." + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{record." + columnName
+							+ ",jdbcType=" + jdbcType + "} end )");
+				} else {
+
+					sb.append(columnName + " = (case when " + columnName + " is null then #{" + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{" + columnName + ",jdbcType="
+							+ jdbcType + "} end )");
+				}
+			} else {
+
 				sb.append(columnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
 
 			}
 			if (index != 1) {
 				sb.append(",");
 			}
-			ifElement.addElement(new TextElement(sb.toString()));
-			method.addElement(ifElement);
+			method.addElement(new TextElement(sb.toString()));
 			index--;
 		}
 

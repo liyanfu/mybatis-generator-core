@@ -73,7 +73,7 @@ public class InsertBatchPlugin extends PluginAdapter {
 		interfaze.addMethod(insertBatch);
 
 		// 2. insertBatchSelective
-		FullyQualifiedJavaType selectiveType = listType = FullyQualifiedJavaType.getNewListInstance();
+		FullyQualifiedJavaType selectiveType = FullyQualifiedJavaType.getNewListInstance();
 		selectiveType.addTypeArgument(FullyQualifiedJavaType.getStringInstance());
 		Method mBatchInsertSelective = JavaElementGeneratorTools.generateMethod(INSERT_BATCH_SELECTIVE,
 				JavaVisibility.DEFAULT, FullyQualifiedJavaType.getIntInstance(),

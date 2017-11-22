@@ -48,42 +48,18 @@ http://mbg.cndocs.tk/
          <plugin type="org.mybatis.generator.plugins.UpdateIncrementsPlugin"/>
          <plugin type="org.mybatis.generator.plugins.AddCriterionIgnoreNullPlugin" />
          <plugin type="org.mybatis.generator.plugins.UpsertPlugin">
-          	<!-- 开启多sql执行 -->
-          	<property name="allowMultiQueries" value="true"/>
+          	<!-- 开启多sql执行
+          	<property name="allowMultiQueries" value="true"/> -->
          </plugin>
         
         <!--插件 ：生成的Java模型创建一个toString方法
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-       -->
+        -->
        
        <!--插件 ：重命名生成的Example类后缀为Criteria
         <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
             <property name="searchString" value="Example$"/>
             <property name="replaceString" value="Criteria"/>
-        </plugin>
-		-->
-		
-        <!-- 统一Mapper 接口
-        <plugin type="org.mybatis.generator.plugins.MapperPlugin">
-            <property name="interfaceName" value="IMapper"/>
-           	是否删除Mapper类里的方法，默认删除
-            <property name="deleteMethod" value="true"/>
-        </plugin>
- 		-->
- 		
-        <!-- service层插件 
-        <plugin type="org.mybatis.generator.plugins.MybatisServicePlugin">
-            <property name="targetPackage" value="${service.package}"/>
-            <property name="implementationPackage" value="${service.package.impl}"/>
-            <property name="targetProject" value="${service.path}"/>
-            <property name="enableInsert" value="true"/>
-            <property name="enableUpdateByExampleSelective" value="true"/>
-            <property name="enableInsertSelective" value="true"/>
-            <property name="enableUpdateByPrimaryKey" value="true"/>
-            <property name="enableDeleteByPrimaryKey" value="true"/>
-            <property name="enableDeleteByExample" value="true"/>
-            <property name="enableUpdateByPrimaryKeySelective" value="true"/>
-            <property name="enableUpdateByExample" value="true"/>
         </plugin>
 		-->
 		
@@ -169,11 +145,11 @@ http://mbg.cndocs.tk/
         <!-- 指定生成的数据库表 -->
         <!-- domainObjectName：指定生成的实体类的文件名 -->
 		
-		<table tableName="a_manual_transfer" domainObjectName="ManualTransfer" >
+		<table tableName="t_test_table" domainObjectName="TestTable" >
 			<!-- 指定生成实体类时是否使用实际的列名作为实体类的属性名  true:是  ,默认:false(Camel Case风格作)-->
 			<property name="useActualColumnNames" value="true"/>
 			<!-- insert方法返回主键Value -->
-			<generatedKey column="manualTransferId" sqlStatement="MySql"  identity="true" type="post"/>
+			<generatedKey column="userId" sqlStatement="MySql"  identity="true" type="post"/>
 		</table>
     </context>
 
