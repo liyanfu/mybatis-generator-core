@@ -168,9 +168,10 @@ public class DefaultCommentGenerator implements CommentGenerator {
 		sb.append(MergeConstants.NEW_ELEMENT_TAG);
 		if (markAsDoNotDelete) {
 			// 添加作者,和时间在每个实体类上
-			sb.append("@author fury"); //$NON-NLS-1$
-			sb.append(" \n * "); //$NON-NLS-1$
-			sb.append("@date " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); //$NON-NLS-1$
+			// sb.append("@author fury"); //$NON-NLS-1$
+			// sb.append(" \n * "); //$NON-NLS-1$
+			// sb.append("@date " + new SimpleDateFormat("yyyy-MM-dd
+			// HH:mm:ss").format(new Date())); //$NON-NLS-1$
 			// sb.append(" do_not_delete_during_merge"); //$NON-NLS-1$
 		}
 		String s = getDateString();
