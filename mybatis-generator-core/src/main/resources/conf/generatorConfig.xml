@@ -151,6 +151,14 @@ http://mbg.cndocs.tk/
 			<!-- insert方法返回主键Value -->
 			<generatedKey column="userId" sqlStatement="MySql"  identity="true" type="post"/>
 		</table>
+		<table tableName="c_account_change_type" domainObjectName="AccountChangeType" >
+			<!-- 指定生成实体类时是否使用实际的列名作为实体类的属性名  true:是  ,默认:false(Camel Case风格作)-->
+			<property name="useActualColumnNames" value="true"/>
+			<!-- insert方法返回主键Value -->
+			<generatedKey column="typeId" sqlStatement="MySql"  identity="true" type="post"/>
+		</table>
+		
+		
     </context>
 
 </generatorConfiguration>
