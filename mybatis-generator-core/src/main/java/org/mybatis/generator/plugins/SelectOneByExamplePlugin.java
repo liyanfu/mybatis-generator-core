@@ -101,7 +101,7 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 		// 添加ID
 		selectOneElement.addAttribute(new Attribute("id", SELECT_ONE_BY_EXAMPLE));
 		// 添加返回类型
-		selectOneElement.addAttribute(new Attribute("resultMap", introspectedTable.getBaseResultMapId()));
+		selectOneElement.addAttribute(new Attribute("resultMap", introspectedTable.getResultMapWithBLOBsId()));
 		// 添加参数类型
 		selectOneElement.addAttribute(new Attribute("parameterType", introspectedTable.getExampleType()));
 		// 添加查询节点
@@ -115,6 +115,8 @@ public class SelectOneByExamplePlugin extends PluginAdapter {
 			selectOneElement.addElement(new TextElement(sb.toString()));
 		}
 		selectOneElement.addElement(XmlElementGeneratorTools.getBaseColumnListElement(introspectedTable));
+		selectOneElement.addElement(new TextElement(","));
+		selectOneElement.addElement(XmlElementGeneratorTools.getBlobColumnListElement(introspectedTable));
 
 		sb.setLength(0);
 		sb.append("from ");
