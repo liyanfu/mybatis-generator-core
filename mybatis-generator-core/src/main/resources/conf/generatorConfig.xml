@@ -145,17 +145,11 @@ http://mbg.cndocs.tk/
         <!-- 指定生成的数据库表 -->
         <!-- domainObjectName：指定生成的实体类的文件名 -->
 		
-		<table tableName="t_test_table" domainObjectName="TestTable" >
+		<table tableName="test" domainObjectName="TestTable" >
 			<!-- 指定生成实体类时是否使用实际的列名作为实体类的属性名  true:是  ,默认:false(Camel Case风格作)-->
-			<property name="useActualColumnNames" value="true"/>
+			<property name="useActualColumnNames" value="false"/>
 			<!-- insert方法返回主键Value -->
-			<generatedKey column="userId" sqlStatement="MySql"  identity="true" type="post"/>
-		</table>
-		<table tableName="c_account_change_type" domainObjectName="AccountChangeType" >
-			<!-- 指定生成实体类时是否使用实际的列名作为实体类的属性名  true:是  ,默认:false(Camel Case风格作)-->
-			<property name="useActualColumnNames" value="true"/>
-			<!-- insert方法返回主键Value -->
-			<generatedKey column="typeId" sqlStatement="MySql"  identity="true" type="post"/>
+			<generatedKey column="id" sqlStatement="MySql"  identity="true" type="post"/>
 		</table>
 		
 		

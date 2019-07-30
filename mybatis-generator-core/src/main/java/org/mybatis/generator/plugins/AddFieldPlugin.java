@@ -26,6 +26,7 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 import org.mybatis.generator.config.Context;
 
 /**
@@ -71,6 +72,8 @@ public class AddFieldPlugin extends PluginAdapter {
 	public Field generateColumnField(TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn) {
 		// 属性名称
 		String columnName = introspectedColumn.getJavaProperty();
+		// 实际数据库字段名 
+		String databaseColumnName =	MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
 
 		FullyQualifiedJavaType columnType = FullyQualifiedJavaType.getStringInstance();
 		// 静态常量属性名称
@@ -79,7 +82,7 @@ public class AddFieldPlugin extends PluginAdapter {
 		columnField.setFinal(true);
 		columnField.setStatic(true);
 		columnField.setType(columnType); // $NON-NLS-1$
-		columnField.setInitializationString("\"" + columnName + "\""); // $NON-NLS-1$
+		columnField.setInitializationString("\"" + databaseColumnName + "\""); // $NON-NLS-1$
 		return columnField;
 	}
 }

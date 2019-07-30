@@ -178,7 +178,15 @@ public class UpdateIncrementsPlugin extends PluginAdapter {
 			// 是否主键
 			boolean isIdentity = introspectedColumn.isIdentity();
 			if (("java.lang.Integer".equals(columnType) || "java.math.BigDecimal".equals(columnType)) && !isIdentity) {
-
+				
+				// 实际数据库字段名 
+				String databaseColumnName =	MyBatis3FormattingUtilities
+                .getEscapedColumnName(introspectedColumn);
+				
+				// 指定生成实体类时是否使用实际的列名作为实体类的属性名  true 则是数据库字段名，否则是骆驼命名规则 false  #{userMoney,jdbcType=DECIMAL}
+				//属性名称  jdbc类型
+				//String columnNameAndJdbcType = MyBatis3FormattingUtilities
+	            //        .getParameterClause(introspectedColumn);
 				// 属性名称
 				String columnName = introspectedColumn.getJavaProperty();
 				// jdbc类型
@@ -189,14 +197,14 @@ public class UpdateIncrementsPlugin extends PluginAdapter {
 
 				if (recordFalg) {
 					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
-					sb.append(" " + columnName + " = (case when " + columnName + " is null then #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{record." + columnName
+					sb.append(" " + databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record." + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record." + columnName
 							+ ",jdbcType=" + jdbcType + "} end ),");
 					ifElement.addElement(new TextElement(sb.toString()));
 				} else {
 					ifElement.addAttribute(new Attribute("test", columnName + " != null"));
-					sb.append(" " + columnName + " = (case when " + columnName + " is null then #{" + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{" + columnName + ",jdbcType="
+					sb.append(" " + databaseColumnName + " = (case when " + databaseColumnName + " is null then #{" + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{" + columnName + ",jdbcType="
 							+ jdbcType + "} end ),");
 					ifElement.addElement(new TextElement(sb.toString()));
 				}

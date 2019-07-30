@@ -34,6 +34,7 @@ import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.ListUtilities;
+import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.internal.util.JavaElementGeneratorTools;
 import org.mybatis.generator.internal.util.XmlElementGeneratorTools;
@@ -440,6 +441,9 @@ public class UpsertPlugin extends PluginAdapter {
 			String columnType = introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedName();
 			// 是否主键
 			boolean isIdentity = introspectedColumn.isIdentity();
+			
+			// 实际数据库字段名 
+			String databaseColumnName =	MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
 
 			// 属性名称
 			String columnName = introspectedColumn.getJavaProperty();
@@ -450,17 +454,17 @@ public class UpsertPlugin extends PluginAdapter {
 
 			XmlElement ifElement = new XmlElement("if");
 
-			if ("java.math.BigDecimal".equals(columnType) && !isIdentity) {
+			if (("java.lang.Integer".equals(columnType) || "java.math.BigDecimal".equals(columnType)) && !isIdentity) {
 
 				if (recordFalg) {
 					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
-					sb.append(columnName + " = (case when " + columnName + " is null then #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{record." + columnName
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record." + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record." + columnName
 							+ ",jdbcType=" + jdbcType + "} end )");
 				} else {
 					ifElement.addAttribute(new Attribute("test", columnName + " != null"));
-					sb.append(columnName + " = (case when " + columnName + " is null then #{" + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{" + columnName + ",jdbcType="
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{" + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{" + columnName + ",jdbcType="
 							+ jdbcType + "} end )");
 
 				}
@@ -468,10 +472,10 @@ public class UpsertPlugin extends PluginAdapter {
 
 				if (recordFalg) {
 					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
-					sb.append(columnName + " =  #{record." + columnName + ",jdbcType=" + jdbcType + "}");
+					sb.append(databaseColumnName + " =  #{record." + columnName + ",jdbcType=" + jdbcType + "}");
 				} else {
 					ifElement.addAttribute(new Attribute("test", columnName + " != null"));
-					sb.append(columnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
+					sb.append(databaseColumnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
 				}
 
 			}
@@ -496,6 +500,10 @@ public class UpsertPlugin extends PluginAdapter {
 			String columnType = introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedName();
 			// 是否主键
 			boolean isIdentity = introspectedColumn.isIdentity();
+			
+			// 实际数据库字段名 
+			String databaseColumnName =	MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
+
 			// 属性名称
 			String columnName = introspectedColumn.getJavaProperty();
 			// jdbc类型
@@ -503,22 +511,22 @@ public class UpsertPlugin extends PluginAdapter {
 			// BIGINT
 			StringBuffer sb = new StringBuffer();
 
-			if ("java.math.BigDecimal".equals(columnType) && !isIdentity) {
+			if (("java.lang.Integer".equals(columnType) || "java.math.BigDecimal".equals(columnType)) && !isIdentity) {
 
 				if (recordFalg) {
 
-					sb.append(columnName + " = (case when " + columnName + " is null then #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{record." + columnName
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record." + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record." + columnName
 							+ ",jdbcType=" + jdbcType + "} end )");
 				} else {
 
-					sb.append(columnName + " = (case when " + columnName + " is null then #{" + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + columnName + " + #{" + columnName + ",jdbcType="
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{" + columnName
+							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{" + columnName + ",jdbcType="
 							+ jdbcType + "} end )");
 				}
 			} else {
 
-				sb.append(columnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
+				sb.append(databaseColumnName + " =  #{" + columnName + ",jdbcType=" + jdbcType + "}");
 
 			}
 			if (index != 1) {

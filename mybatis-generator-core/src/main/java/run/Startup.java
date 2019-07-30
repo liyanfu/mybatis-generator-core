@@ -1,4 +1,4 @@
-
+package run;
 import org.mybatis.generator.api.ShellRunner;
 
 /**
