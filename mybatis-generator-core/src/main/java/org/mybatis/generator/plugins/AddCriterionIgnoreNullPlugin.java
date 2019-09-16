@@ -31,6 +31,7 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.internal.util.JavaElementGeneratorTools;
 
@@ -132,6 +133,8 @@ public class AddCriterionIgnoreNullPlugin extends PluginAdapter {
 	 */
 	private void andColumnLikeInsensitive(TopLevelClass topLevelClass, InnerClass innerClass,
 			IntrospectedColumn columns) {
+		// 实际数据库字段名
+		String databaseColumnName = MyBatis3FormattingUtilities.getEscapedColumnName(columns);
 		// bean属性名称
 		String columnName = columns.getJavaProperty();
 		// 属性名首字母转大写
@@ -148,7 +151,8 @@ public class AddCriterionIgnoreNullPlugin extends PluginAdapter {
 
 		// 生成方法实现体
 		andColumnLikeInsensitive = JavaElementGeneratorTools.generateMethodBody(andColumnLikeInsensitive,
-				"addCriterion(\"upper(" + columnName + ") like\", value.toUpperCase(), \"" + columnName + "\");", //
+				"addCriterion(\"upper(" + databaseColumnName + ") like\", value.toUpperCase(), \"" + columnName
+						+ "\");", //
 				"return this;" //
 		);
 		// 添加方法

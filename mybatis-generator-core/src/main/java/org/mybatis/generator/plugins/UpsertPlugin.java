@@ -441,9 +441,9 @@ public class UpsertPlugin extends PluginAdapter {
 			String columnType = introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedName();
 			// 是否主键
 			boolean isIdentity = introspectedColumn.isIdentity();
-			
-			// 实际数据库字段名 
-			String databaseColumnName =	MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
+
+			// 实际数据库字段名
+			String databaseColumnName = MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
 
 			// 属性名称
 			String columnName = introspectedColumn.getJavaProperty();
@@ -458,14 +458,14 @@ public class UpsertPlugin extends PluginAdapter {
 
 				if (recordFalg) {
 					ifElement.addAttribute(new Attribute("test", "record." + columnName + " != null"));
-					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} end )");
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record."
+							+ columnName + ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record."
+							+ columnName + ",jdbcType=" + jdbcType + "} end )");
 				} else {
 					ifElement.addAttribute(new Attribute("test", columnName + " != null"));
-					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{" + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{" + columnName + ",jdbcType="
-							+ jdbcType + "} end )");
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{"
+							+ columnName + ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{"
+							+ columnName + ",jdbcType=" + jdbcType + "} end )");
 
 				}
 			} else {
@@ -500,9 +500,9 @@ public class UpsertPlugin extends PluginAdapter {
 			String columnType = introspectedColumn.getFullyQualifiedJavaType().getFullyQualifiedName();
 			// 是否主键
 			boolean isIdentity = introspectedColumn.isIdentity();
-			
-			// 实际数据库字段名 
-			String databaseColumnName =	MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
+
+			// 实际数据库字段名
+			String databaseColumnName = MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn);
 
 			// 属性名称
 			String columnName = introspectedColumn.getJavaProperty();
@@ -515,14 +515,14 @@ public class UpsertPlugin extends PluginAdapter {
 
 				if (recordFalg) {
 
-					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record." + columnName
-							+ ",jdbcType=" + jdbcType + "} end )");
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{record."
+							+ columnName + ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{record."
+							+ columnName + ",jdbcType=" + jdbcType + "} end )");
 				} else {
 
-					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{" + columnName
-							+ ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{" + columnName + ",jdbcType="
-							+ jdbcType + "} end )");
+					sb.append(databaseColumnName + " = (case when " + databaseColumnName + " is null then #{"
+							+ columnName + ",jdbcType=" + jdbcType + "} else " + databaseColumnName + " + #{"
+							+ columnName + ",jdbcType=" + jdbcType + "} end )");
 				}
 			} else {
 
